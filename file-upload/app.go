@@ -36,8 +36,8 @@ func loadEnv() {
 }
 
 func respondMessage(w http.ResponseWriter, code int, message string) {
-	w.WriteHeader(code)
 	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(code)
 	messageStruct := Message{
 		Code:    code,
 		Message: message,
