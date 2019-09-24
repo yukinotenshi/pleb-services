@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/joho/godotenv"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -21,6 +22,7 @@ type Message struct {
 }
 
 func loadEnv() {
+	_ = godotenv.Load()
 	var err error
 	MaxFileSize, err = strconv.ParseInt(os.Getenv("MAX_FILE_SIZE_MB"), 10, 64)
 	if err != nil {
