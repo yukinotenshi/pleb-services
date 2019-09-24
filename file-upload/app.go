@@ -37,6 +37,7 @@ func loadEnv() {
 
 func respondMessage(w http.ResponseWriter, code int, message string) {
 	w.WriteHeader(code)
+	w.Header().Add("Content-Type", "application/json")
 	messageStruct := Message{
 		Code:    code,
 		Message: message,
@@ -104,7 +105,7 @@ func downloadFile(w http.ResponseWriter, r *http.Request) {
 func setupRoutes() {
 	http.HandleFunc("/upload", uploadFile)
 	http.HandleFunc("/download", downloadFile)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8000", nil)
 }
 
 func main() {
