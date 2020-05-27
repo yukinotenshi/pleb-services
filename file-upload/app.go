@@ -58,6 +58,10 @@ func generateRandomString(length int) string {
 	return string(result)
 }
 
+func validateFilename(filename string) bool {
+	return !strings.Contains(filename, "..") && !strings.Contains(filename, "/")
+}
+
 func uploadFile(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseMultipartForm(MaxFileSize << 20)
 	file, handler, err := r.FormFile("file")
@@ -66,6 +70,11 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer file.Close()
+
+	if !validateFilename(handler.Filename) {
+		respondMessage(w, 400, fmt.Sprintf("Invalid filename"))
+		return
+	}
 
 	filenameParts := strings.Split(handler.Filename, ".")
 	extension := filenameParts[len(filenameParts)-1]
@@ -91,6 +100,11 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 
 func downloadFile(w http.ResponseWriter, r *http.Request) {
 	filename := r.URL.Query()["file"][0]
+	if !validateFilename(filename) {
+		respondMessage(w, 400, fmt.Sprintf("Invalid filename"))
+		return
+	}
+
 	fileData, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", UploadDir, filename))
 	if err != nil {
 		fmt.Print(err)
